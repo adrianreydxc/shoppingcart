@@ -1,5 +1,6 @@
 package com.myshoppingcart.persistence;
 
+import com.myshoppingcart.config.SpringConfig;
 import com.myshoppingcart.model.Compra;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -17,7 +18,7 @@ import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @ExtendWith(SpringExtension.class)
-@ContextConfiguration(classes = {CompraDBRepository.class})
+@ContextConfiguration(classes = {SpringConfig.class})
 @ActiveProfiles("Dev")
 public class CompraDBRepositoryTest {
 
