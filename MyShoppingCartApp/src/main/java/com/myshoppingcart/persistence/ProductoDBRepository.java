@@ -3,12 +3,14 @@ package com.myshoppingcart.persistence;
 import com.myshoppingcart.exception.ProductNotFoundException;
 import com.myshoppingcart.model.Producto;
 import lombok.Setter;
+import org.springframework.stereotype.Repository;
 
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
 @Setter
+@Repository
 public class ProductoDBRepository implements IProductoRepository {
     private String connUrl;
 

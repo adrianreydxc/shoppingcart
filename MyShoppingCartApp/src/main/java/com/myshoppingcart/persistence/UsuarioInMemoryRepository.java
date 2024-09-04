@@ -2,6 +2,7 @@ package com.myshoppingcart.persistence;
 
 import com.myshoppingcart.exception.UsuarioNotFoundException;
 import com.myshoppingcart.model.Usuario;
+import org.springframework.stereotype.Repository;
 
 import java.security.SecureRandom;
 import java.time.LocalDate;
@@ -9,6 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
+@Repository
 public class UsuarioInMemoryRepository implements IUsuarioRepository {
     private static Logger logger = Logger.getLogger("UsuarioInMemoryRepository");
 

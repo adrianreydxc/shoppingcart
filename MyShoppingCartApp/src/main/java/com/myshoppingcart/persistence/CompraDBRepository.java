@@ -3,11 +3,17 @@ package com.myshoppingcart.persistence;
 import com.myshoppingcart.exception.ProductNotFoundException;
 import com.myshoppingcart.model.Compra;
 import lombok.Setter;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Profile;
+import org.springframework.stereotype.Repository;
 
 import java.sql.*;
 
 @Setter
+@Repository
+@Profile("Dev")
 public class CompraDBRepository implements ICompraRepository {
+    @Value("${db_url}")
     private String connUrl;
 
     public Compra insertCompra(Compra nuevaCompra) throws Exception {
