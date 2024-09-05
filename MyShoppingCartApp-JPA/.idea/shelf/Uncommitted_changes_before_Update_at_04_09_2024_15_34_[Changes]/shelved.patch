@@ -1,0 +1,628 @@
+Index: src/main/java/com/myshoppingcart/config/ServicesConfig.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.myshoppingcart.config;\r\n\r\nimport com.myshoppingcart.persistence.ICompraRepository;\r\nimport com.myshoppingcart.service.IShoppingCart;\r\nimport com.myshoppingcart.service.ShoppingCart;\r\nimport org.springframework.beans.factory.annotation.Autowired;\r\nimport org.springframework.context.annotation.Bean;\r\nimport org.springframework.context.annotation.Configuration;\r\n\r\n@Configuration\r\npublic class ServicesConfig {\r\n    @Autowired\r\n    ICompraRepository compraRepo;\r\n\r\n    @Bean\r\n    public IShoppingCart getShoppingCart() {\r\n        ShoppingCart cart = new ShoppingCart();\r\n        cart.setRepoCompras(compraRepo);\r\n        return cart;\r\n    }\r\n\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/main/java/com/myshoppingcart/config/ServicesConfig.java b/src/main/java/com/myshoppingcart/config/ServicesConfig.java
+--- a/src/main/java/com/myshoppingcart/config/ServicesConfig.java	(revision e1669f380c0edc44b19bdbbcb5fb9ed7766a6104)
++++ b/src/main/java/com/myshoppingcart/config/ServicesConfig.java	(date 1725455896285)
+@@ -5,9 +5,11 @@
+ import com.myshoppingcart.service.ShoppingCart;
+ import org.springframework.beans.factory.annotation.Autowired;
+ import org.springframework.context.annotation.Bean;
++import org.springframework.context.annotation.ComponentScan;
+ import org.springframework.context.annotation.Configuration;
+ 
+ @Configuration
++@ComponentScan(basePackages = {"com.myshoppingcart.service"})
+ public class ServicesConfig {
+     @Autowired
+     ICompraRepository compraRepo;
+Index: src/main/java/com/myshoppingcart/config/ReposConfig.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.myshoppingcart.config;\r\n\r\nimport com.myshoppingcart.persistence.*;\r\nimport org.springframework.beans.factory.annotation.Value;\r\nimport org.springframework.context.annotation.Bean;\r\nimport org.springframework.context.annotation.Configuration;\r\nimport org.springframework.context.annotation.Profile;\r\n\r\n@Configuration\r\npublic class ReposConfig {\r\n\r\n\r\n    @Value(\"${db_url}\")\r\n    String connUrl;\r\n\r\n\r\n    /*@Bean\r\n    public ICompraRepository createICompraRepository() {\r\n         CompraDBRepository repo = new CompraDBRepository();\r\n         repo.setConnUrl(connUrl);\r\n         return repo;\r\n    }*/\r\n\r\n    @Bean\r\n    public IProductoRepository createIProductoRepository() {\r\n        ProductoDBRepository repo = new ProductoDBRepository();\r\n        repo.setConnUrl(connUrl);\r\n        return repo;\r\n    }\r\n\r\n    @Bean\r\n    @Profile(\"prod\")\r\n    public IUsuarioRepository createDBUsuarioRepository() {\r\n        System.out.println(\"usando UsuarioDBRepository...\");\r\n        UsuarioDBRepository repo = new UsuarioDBRepository();\r\n        repo.setDb_url(connUrl);\r\n        return repo;\r\n    }\r\n\r\n    @Bean\r\n    @Profile({\"default\", \"dev\"})\r\n    public IUsuarioRepository createInMemUsuarioRepository() {\r\n        System.out.println(\"usando UsuarioInMemoryRepository...\");\r\n        UsuarioInMemoryRepository repo = new UsuarioInMemoryRepository();\r\n        return repo;\r\n    }\r\n\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/main/java/com/myshoppingcart/config/ReposConfig.java b/src/main/java/com/myshoppingcart/config/ReposConfig.java
+--- a/src/main/java/com/myshoppingcart/config/ReposConfig.java	(revision e1669f380c0edc44b19bdbbcb5fb9ed7766a6104)
++++ b/src/main/java/com/myshoppingcart/config/ReposConfig.java	(date 1725455896259)
+@@ -2,17 +2,17 @@
+ 
+ import com.myshoppingcart.persistence.*;
+ import org.springframework.beans.factory.annotation.Value;
+-import org.springframework.context.annotation.Bean;
+-import org.springframework.context.annotation.Configuration;
+-import org.springframework.context.annotation.Profile;
++import org.springframework.boot.autoconfigure.domain.EntityScan;
++import org.springframework.context.annotation.*;
+ 
+ @Configuration
++@EntityScan("com.myshoppingcart.model")
++@ComponentScan(basePackages = {"com.myshoppingcart.persistence"})
+ public class ReposConfig {
+ 
+ 
+-    @Value("${db_url}")
+-    String connUrl;
+-
++//    @Value("${db_url}")
++//    String connUrl;
+ 
+     /*@Bean
+     public ICompraRepository createICompraRepository() {
+@@ -20,29 +20,29 @@
+          repo.setConnUrl(connUrl);
+          return repo;
+     }*/
+-
+-    @Bean
+-    public IProductoRepository createIProductoRepository() {
+-        ProductoDBRepository repo = new ProductoDBRepository();
+-        repo.setConnUrl(connUrl);
+-        return repo;
+-    }
+-
+-    @Bean
+-    @Profile("prod")
+-    public IUsuarioRepository createDBUsuarioRepository() {
+-        System.out.println("usando UsuarioDBRepository...");
+-        UsuarioDBRepository repo = new UsuarioDBRepository();
+-        repo.setDb_url(connUrl);
+-        return repo;
+-    }
+ 
+-    @Bean
+-    @Profile({"default", "dev"})
+-    public IUsuarioRepository createInMemUsuarioRepository() {
+-        System.out.println("usando UsuarioInMemoryRepository...");
+-        UsuarioInMemoryRepository repo = new UsuarioInMemoryRepository();
+-        return repo;
+-    }
++//    @Bean
++//    public IProductoRepository createIProductoRepository() {
++//        ProductoDBRepository repo = new ProductoDBRepository();
++//        repo.setConnUrl(connUrl);
++//        return repo;
++//    }
++//
++//    @Bean
++//    @Profile("prod")
++//    public IUsuarioRepository createDBUsuarioRepository() {
++//        System.out.println("usando UsuarioDBRepository...");
++//        UsuarioDBRepository repo = new UsuarioDBRepository();
++//        repo.setDb_url(connUrl);
++//        return repo;
++//    }
++
++//    @Bean
++//    @Profile({"default", "dev"})
++//    public IUsuarioRepository createInMemUsuarioRepository() {
++//        System.out.println("usando UsuarioInMemoryRepository...");
++//        UsuarioInMemoryRepository repo = new UsuarioInMemoryRepository();
++//        return repo;
++//    }
+ 
+ }
+Index: src/test/java/com/myshoppingcart/AppTest.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.myshoppingcart;\r\n\r\nimport com.myshoppingcart.config.SpringConfig;\r\nimport org.junit.jupiter.api.Test;\r\nimport org.junit.jupiter.api.extension.ExtendWith;\r\nimport org.springframework.test.context.ContextConfiguration;\r\nimport org.springframework.test.context.junit.jupiter.SpringExtension;\r\n\r\nimport static org.junit.jupiter.api.Assertions.*;\r\n\r\n\r\n@ExtendWith(SpringExtension.class)\r\n@ContextConfiguration(classes = {SpringConfig.class})\r\nclass AppTest {\r\n\r\n    @Test\r\n    void loadContext() {\r\n        assertTrue(true);\r\n    }\r\n\r\n}
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/test/java/com/myshoppingcart/AppTest.java b/src/test/java/com/myshoppingcart/AppTest.java
+--- a/src/test/java/com/myshoppingcart/AppTest.java	(revision e1669f380c0edc44b19bdbbcb5fb9ed7766a6104)
++++ b/src/test/java/com/myshoppingcart/AppTest.java	(date 1725451428061)
+@@ -3,18 +3,33 @@
+ import com.myshoppingcart.config.SpringConfig;
+ import org.junit.jupiter.api.Test;
+ import org.junit.jupiter.api.extension.ExtendWith;
++import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+ import org.springframework.test.context.ContextConfiguration;
+ import org.springframework.test.context.junit.jupiter.SpringExtension;
+ 
++import javax.persistence.EntityManager;
++import javax.persistence.PersistenceContext;
++import javax.persistence.EntityManagerFactory;
++import javax.persistence.PersistenceUnit;
++
+ import static org.junit.jupiter.api.Assertions.*;
+ 
+ 
+ @ExtendWith(SpringExtension.class)
+ @ContextConfiguration(classes = {SpringConfig.class})
++@EnableAutoConfiguration
+ class AppTest {
+ 
++    @PersistenceContext
++    EntityManager entityManager;
++
++    @PersistenceUnit
++    EntityManagerFactory entityManagerFactory;
++
+     @Test
+-    void loadContext() {
++    public void load() {
++        assertNotNull(entityManager);
++        assertNotNull(entityManagerFactory);
+         assertTrue(true);
+     }
+ 
+Index: src/main/java/com/myshoppingcart/persistence/UsuarioDBRepository.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.myshoppingcart.persistence;\r\n\r\nimport com.myshoppingcart.exception.UsuarioNotFoundException;\r\nimport com.myshoppingcart.model.Usuario;\r\nimport lombok.Setter;\r\n\r\nimport java.sql.*;\r\nimport java.util.ArrayList;\r\nimport java.util.List;\r\n\r\n//@Component\r\n@Setter\r\npublic class UsuarioDBRepository implements IUsuarioRepository {\r\n    private String db_url = null;\r\n\r\n\r\n    @Override\r\n    public boolean existeUsuario(String email, String pass) throws Exception {\r\n        boolean existe = false;\r\n\r\n        String sql = \"SELECT * FROM usuario u WHERE u.email=? AND password=?\";\r\n\r\n        try (\r\n                Connection conn = DriverManager.getConnection(db_url);\r\n                PreparedStatement stmt = conn.prepareStatement(sql);\r\n        ) {\r\n            stmt.setString(1, email);\r\n            stmt.setString(2, pass);\r\n\r\n            ResultSet rs = stmt.executeQuery();\r\n\r\n            if (rs.next()) {\r\n                System.out.println(rs);\r\n                existe = true;\r\n            }\r\n\r\n        } catch (SQLException e) {\r\n            e.printStackTrace();\r\n            throw new Exception(e);\r\n        }\r\n\r\n        return existe;\r\n    }\r\n\r\n    @Override\r\n    public Usuario getUsuario(String email, String pass) throws UsuarioNotFoundException, Exception {\r\n        Usuario user = null;\r\n\r\n        try (\r\n                Connection conn = DriverManager.getConnection(db_url);\r\n                Statement stmt = conn.createStatement();\r\n                ResultSet rs = stmt.executeQuery(\"SELECT * FROM usuario u WHERE u.email='\" + email + \"' AND password='\" + pass + \"' LIMIT 1\")\r\n        ) {\r\n            if (rs.next()) {\r\n                user = new Usuario(\r\n                        rs.getInt(\"uid\"),\r\n                        rs.getString(\"nombre\"),\r\n                        rs.getString(\"apellido\"),\r\n                        rs.getString(\"email\"),\r\n                        rs.getInt(\"interes\"),\r\n                        rs.getDouble(\"saldo\"),\r\n                        rs.getString(\"password\"),\r\n                        rs.getDate(\"nacimiento\").toLocalDate(),\r\n                        rs.getBoolean(\"activo\")\r\n                );\r\n            }\r\n\r\n        } catch (SQLException e) {\r\n            e.printStackTrace();\r\n            throw new Exception(e);\r\n        }\r\n\r\n        return user;\r\n    }\r\n\r\n    public List<Usuario> getUsuarios(String iniciales) throws Exception {\r\n\r\n        List<Usuario> users = new ArrayList<>();\r\n\r\n        try (\r\n                Connection conn = DriverManager.getConnection(db_url);\r\n                PreparedStatement stmt = conn.prepareStatement(\"SELECT * FROM usuario u WHERE u.nombre LIKE ?\");\r\n        ) {\r\n\r\n            stmt.setString(1, \"%\" + iniciales + \"%\");\r\n            ResultSet rs = stmt.executeQuery();\r\n\r\n            while (rs.next()) {\r\n                users.add(\r\n                        new Usuario(\r\n                                rs.getInt(\"uid\"),\r\n                                rs.getString(\"nombre\"),\r\n                                rs.getString(\"apellido\"),\r\n                                rs.getString(\"email\"),\r\n                                rs.getInt(\"interes\"),\r\n                                rs.getDouble(\"saldo\"),\r\n                                rs.getString(\"password\"),\r\n                                rs.getDate(\"nacimiento\").toLocalDate(),\r\n                                rs.getBoolean(\"activo\")\r\n                        )\r\n                );\r\n            }\r\n\r\n        } catch (SQLException e) {\r\n            e.printStackTrace();\r\n            throw new Exception(e);\r\n        }\r\n\r\n        return users;\r\n    }\r\n\r\n    @Override\r\n    public Usuario insertUsuario(Usuario nuevoUsuario) throws Exception {\r\n\r\n        String sql = \"INSERT INTO usuario values (NULL,?,?,?,?,?,?,?,?)\";\r\n\r\n        try (\r\n                Connection conn = DriverManager.getConnection(db_url);\r\n                PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);\r\n        ) {\r\n            stmt.setString(1, nuevoUsuario.getNombre());\r\n            stmt.setString(2, nuevoUsuario.getApellido());\r\n            stmt.setString(3, nuevoUsuario.getEmail());\r\n            stmt.setInt(4, nuevoUsuario.getInteres());\r\n            stmt.setDouble(5, nuevoUsuario.getSaldo());\r\n            stmt.setString(6, nuevoUsuario.getPassword());\r\n            stmt.setString(7, nuevoUsuario.getNacimiento().toString());\r\n            stmt.setInt(8, nuevoUsuario.isActivo() ? 1 : 0);\r\n\r\n            int rows = stmt.executeUpdate();\r\n\r\n            ResultSet genKeys = stmt.getGeneratedKeys();\r\n            if (genKeys.next()) {\r\n                nuevoUsuario.setUid(genKeys.getInt(1));\r\n            } else {\r\n                throw new SQLException(\"Usuario creado erroneamente!!!\");\r\n            }\r\n\r\n        } catch (SQLException e) {\r\n            e.printStackTrace();\r\n            throw new Exception(e);\r\n        }\r\n\r\n        return nuevoUsuario;\r\n    }\r\n\r\n    @Override\r\n    public Usuario updateUsuario(Usuario unUsuario) throws Exception {\r\n        String sql = \"UPDATE usuario set nombre=?, apellido=?, email=?, interes=?, saldo=?, password=?, nacimiento=?, activo=? WHERE uid=?\";\r\n\r\n        try (\r\n                Connection conn = DriverManager.getConnection(db_url);\r\n                PreparedStatement stmt = conn.prepareStatement(sql);\r\n        ) {\r\n            stmt.setString(1, unUsuario.getNombre());\r\n            stmt.setString(2, unUsuario.getApellido());\r\n            stmt.setString(3, unUsuario.getEmail());\r\n            stmt.setInt(4, unUsuario.getInteres());\r\n            stmt.setDouble(5, unUsuario.getSaldo());\r\n            stmt.setString(6, unUsuario.getPassword());\r\n            stmt.setString(7, unUsuario.getNacimiento().toString());\r\n            stmt.setInt(8, unUsuario.isActivo() ? 1 : 0);\r\n            stmt.setInt(9, unUsuario.getUid());\r\n\r\n            int rows = stmt.executeUpdate();\r\n\r\n        } catch (SQLException e) {\r\n            e.printStackTrace();\r\n            throw e;\r\n        }\r\n\r\n        return unUsuario;\r\n    }\r\n\r\n    @Override\r\n    public boolean deleteUsuario(Integer uid) throws Exception {\r\n       String sql = \"DELETE FROM usuario WHERE uid=?\";\r\n\r\n        try (\r\n                Connection conn = DriverManager.getConnection(db_url);\r\n                PreparedStatement stmt = conn.prepareStatement(sql);\r\n        ) {\r\n            stmt.setInt(1, uid);\r\n\r\n            int rows = stmt.executeUpdate();\r\n            System.out.println(rows);\r\n\r\n            if(rows<=0){\r\n                throw new UsuarioNotFoundException();\r\n            }\r\n\r\n        } catch (SQLException e) {\r\n            e.printStackTrace();\r\n            throw e;\r\n        }\r\n\r\n        return true;\r\n    }\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/main/java/com/myshoppingcart/persistence/UsuarioDBRepository.java b/src/main/java/com/myshoppingcart/persistence/UsuarioDBRepository.java
+--- a/src/main/java/com/myshoppingcart/persistence/UsuarioDBRepository.java	(revision e1669f380c0edc44b19bdbbcb5fb9ed7766a6104)
++++ b/src/main/java/com/myshoppingcart/persistence/UsuarioDBRepository.java	(date 1725456888053)
+@@ -3,197 +3,84 @@
+ import com.myshoppingcart.exception.UsuarioNotFoundException;
+ import com.myshoppingcart.model.Usuario;
+ import lombok.Setter;
++import org.springframework.stereotype.Repository;
+ 
++import javax.persistence.EntityManager;
++import javax.persistence.PersistenceContext;
++import javax.persistence.TypedQuery;
++import org.springframework.transaction.annotation.Transactional;
+ import java.sql.*;
+ import java.util.ArrayList;
+ import java.util.List;
+ 
+-//@Component
+ @Setter
++@Repository
+ public class UsuarioDBRepository implements IUsuarioRepository {
+-    private String db_url = null;
++
++//    private String db_url = null;
+ 
++
++    @PersistenceContext
++    EntityManager entityManager;
+ 
+     @Override
++    @Transactional
+     public boolean existeUsuario(String email, String pass) throws Exception {
+-        boolean existe = false;
+-
+-        String sql = "SELECT * FROM usuario u WHERE u.email=? AND password=?";
+-
+-        try (
+-                Connection conn = DriverManager.getConnection(db_url);
+-                PreparedStatement stmt = conn.prepareStatement(sql);
+-        ) {
+-            stmt.setString(1, email);
+-            stmt.setString(2, pass);
+-
+-            ResultSet rs = stmt.executeQuery();
+ 
+-            if (rs.next()) {
+-                System.out.println(rs);
+-                existe = true;
+-            }
++        String jpql = "Select u from Usuario u where u.e" +
++                "mail =:email AND u.password = :pass";
++        TypedQuery<Usuario> query = entityManager.createQuery(jpql, Usuario.class);
++        query.setParameter("email",email);
++        query.setParameter("password",pass);
+ 
+-        } catch (SQLException e) {
+-            e.printStackTrace();
+-            throw new Exception(e);
+-        }
+-
+-        return existe;
++        List<Usuario> usuarios = query.getResultList();
++        return !usuarios.isEmpty();
+     }
+ 
+     @Override
++    @Transactional
+     public Usuario getUsuario(String email, String pass) throws UsuarioNotFoundException, Exception {
+-        Usuario user = null;
++        String jqlp = "Select u from Usuario u where u.email = :email AND u.pass";
++        TypedQuery<Usuario> query = entityManager.createQuery(jqlp, Usuario.class);
++        query.setParameter("email",email);
++        query.setParameter("password",pass);
+ 
+-        try (
+-                Connection conn = DriverManager.getConnection(db_url);
+-                Statement stmt = conn.createStatement();
+-                ResultSet rs = stmt.executeQuery("SELECT * FROM usuario u WHERE u.email='" + email + "' AND password='" + pass + "' LIMIT 1")
+-        ) {
+-            if (rs.next()) {
+-                user = new Usuario(
+-                        rs.getInt("uid"),
+-                        rs.getString("nombre"),
+-                        rs.getString("apellido"),
+-                        rs.getString("email"),
+-                        rs.getInt("interes"),
+-                        rs.getDouble("saldo"),
+-                        rs.getString("password"),
+-                        rs.getDate("nacimiento").toLocalDate(),
+-                        rs.getBoolean("activo")
+-                );
+-            }
+ 
+-        } catch (SQLException e) {
+-            e.printStackTrace();
+-            throw new Exception(e);
+-        }
++        return null;
++    }
+ 
+-        return user;
+-    }
+-
++    @Transactional
+     public List<Usuario> getUsuarios(String iniciales) throws Exception {
+-
+-        List<Usuario> users = new ArrayList<>();
+-
+-        try (
+-                Connection conn = DriverManager.getConnection(db_url);
+-                PreparedStatement stmt = conn.prepareStatement("SELECT * FROM usuario u WHERE u.nombre LIKE ?");
+-        ) {
+-
+-            stmt.setString(1, "%" + iniciales + "%");
+-            ResultSet rs = stmt.executeQuery();
+-
+-            while (rs.next()) {
+-                users.add(
+-                        new Usuario(
+-                                rs.getInt("uid"),
+-                                rs.getString("nombre"),
+-                                rs.getString("apellido"),
+-                                rs.getString("email"),
+-                                rs.getInt("interes"),
+-                                rs.getDouble("saldo"),
+-                                rs.getString("password"),
+-                                rs.getDate("nacimiento").toLocalDate(),
+-                                rs.getBoolean("activo")
+-                        )
+-                );
+-            }
+-
+-        } catch (SQLException e) {
+-            e.printStackTrace();
+-            throw new Exception(e);
+-        }
+-
+-        return users;
++        String jpql = "Select u from Usuarios where u.nombre LIKE :iniciales";
++        TypedQuery<Usuario> query = entityManager.createQuery(jpql, Usuario.class);
++        query.setParameter("nombre", "%" + iniciales + "%");
++        return query.getResultList();
+     }
+ 
+     @Override
++    @Transactional
+     public Usuario insertUsuario(Usuario nuevoUsuario) throws Exception {
+-
+-        String sql = "INSERT INTO usuario values (NULL,?,?,?,?,?,?,?,?)";
+-
+-        try (
+-                Connection conn = DriverManager.getConnection(db_url);
+-                PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+-        ) {
+-            stmt.setString(1, nuevoUsuario.getNombre());
+-            stmt.setString(2, nuevoUsuario.getApellido());
+-            stmt.setString(3, nuevoUsuario.getEmail());
+-            stmt.setInt(4, nuevoUsuario.getInteres());
+-            stmt.setDouble(5, nuevoUsuario.getSaldo());
+-            stmt.setString(6, nuevoUsuario.getPassword());
+-            stmt.setString(7, nuevoUsuario.getNacimiento().toString());
+-            stmt.setInt(8, nuevoUsuario.isActivo() ? 1 : 0);
+-
+-            int rows = stmt.executeUpdate();
+-
+-            ResultSet genKeys = stmt.getGeneratedKeys();
+-            if (genKeys.next()) {
+-                nuevoUsuario.setUid(genKeys.getInt(1));
+-            } else {
+-                throw new SQLException("Usuario creado erroneamente!!!");
+-            }
+-
+-        } catch (SQLException e) {
+-            e.printStackTrace();
+-            throw new Exception(e);
+-        }
+-
++        entityManager.persist(nuevoUsuario);
+         return nuevoUsuario;
+     }
+ 
+     @Override
++    @Transactional
+     public Usuario updateUsuario(Usuario unUsuario) throws Exception {
+-        String sql = "UPDATE usuario set nombre=?, apellido=?, email=?, interes=?, saldo=?, password=?, nacimiento=?, activo=? WHERE uid=?";
+-
+-        try (
+-                Connection conn = DriverManager.getConnection(db_url);
+-                PreparedStatement stmt = conn.prepareStatement(sql);
+-        ) {
+-            stmt.setString(1, unUsuario.getNombre());
+-            stmt.setString(2, unUsuario.getApellido());
+-            stmt.setString(3, unUsuario.getEmail());
+-            stmt.setInt(4, unUsuario.getInteres());
+-            stmt.setDouble(5, unUsuario.getSaldo());
+-            stmt.setString(6, unUsuario.getPassword());
+-            stmt.setString(7, unUsuario.getNacimiento().toString());
+-            stmt.setInt(8, unUsuario.isActivo() ? 1 : 0);
+-            stmt.setInt(9, unUsuario.getUid());
+-
+-            int rows = stmt.executeUpdate();
+-
+-        } catch (SQLException e) {
+-            e.printStackTrace();
+-            throw e;
+-        }
+-
+-        return unUsuario;
++       if(entityManager.find(Usuario.class, unUsuario.getUid()) == null){
++             throw new UsuarioNotFoundException();
++       }
++       return entityManager.merge(unUsuario);
+     }
+ 
+     @Override
++    @Transactional
+     public boolean deleteUsuario(Integer uid) throws Exception {
+-       String sql = "DELETE FROM usuario WHERE uid=?";
+-
+-        try (
+-                Connection conn = DriverManager.getConnection(db_url);
+-                PreparedStatement stmt = conn.prepareStatement(sql);
+-        ) {
+-            stmt.setInt(1, uid);
+-
+-            int rows = stmt.executeUpdate();
+-            System.out.println(rows);
+-
+-            if(rows<=0){
+-                throw new UsuarioNotFoundException();
+-            }
+-
+-        } catch (SQLException e) {
+-            e.printStackTrace();
+-            throw e;
++        Usuario usuario = entityManager.find(Usuario.class, uid);
++        if (usuario == null){
++            throw new UsuarioNotFoundException();
+         }
+-
++        entityManager.remove(usuario);
+         return true;
+     }
+ }
+Index: src/main/java/com/myshoppingcart/model/Usuario.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.myshoppingcart.model;\r\n\r\nimport lombok.AllArgsConstructor;\r\nimport lombok.Getter;\r\nimport lombok.Setter;\r\nimport lombok.ToString;\r\n\r\nimport java.time.LocalDate;\r\n\r\n@AllArgsConstructor\r\n@Getter\r\n@Setter\r\n@ToString\r\npublic class Usuario {\r\n    private Integer uid;\r\n    private String nombre;\r\n    private String apellido;\r\n    private String email;\r\n    private int interes;\r\n    private double saldo;\r\n    private String password;\r\n    private LocalDate nacimiento;\r\n    private boolean activo;\r\n\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/main/java/com/myshoppingcart/model/Usuario.java b/src/main/java/com/myshoppingcart/model/Usuario.java
+--- a/src/main/java/com/myshoppingcart/model/Usuario.java	(revision e1669f380c0edc44b19bdbbcb5fb9ed7766a6104)
++++ b/src/main/java/com/myshoppingcart/model/Usuario.java	(date 1725450930251)
+@@ -1,17 +1,19 @@
+ package com.myshoppingcart.model;
+ 
+-import lombok.AllArgsConstructor;
+-import lombok.Getter;
+-import lombok.Setter;
+-import lombok.ToString;
++import lombok.*;
+ 
++import javax.persistence.*;
+ import java.time.LocalDate;
+ 
++@Data
++@Entity
++@NoArgsConstructor
+ @AllArgsConstructor
+-@Getter
+-@Setter
+-@ToString
++@Table(name = "Usuario")
+ public class Usuario {
++
++    @Id
++    @GeneratedValue(strategy = GenerationType.IDENTITY)
+     private Integer uid;
+     private String nombre;
+     private String apellido;
+Index: src/test/java/com/myshoppingcart/persistence/UsuarioDBRepositoryTest.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.myshoppingcart.persistence;\r\n\r\nimport com.myshoppingcart.config.SpringConfig;\r\nimport com.myshoppingcart.exception.UsuarioNotFoundException;\r\nimport com.myshoppingcart.model.Usuario;\r\nimport org.junit.jupiter.api.Test;\r\nimport org.junit.jupiter.api.extension.ExtendWith;\r\nimport org.springframework.beans.factory.annotation.Autowired;\r\nimport org.springframework.test.context.ActiveProfiles;\r\nimport org.springframework.test.context.ContextConfiguration;\r\nimport org.springframework.test.context.junit.jupiter.SpringExtension;\r\n\r\nimport java.time.LocalDate;\r\nimport java.util.List;\r\n\r\nimport static org.hamcrest.MatcherAssert.assertThat;\r\nimport static org.hamcrest.Matchers.*;\r\nimport static org.junit.jupiter.api.Assertions.assertThrows;\r\n\r\n@ExtendWith(SpringExtension.class)\r\n@ContextConfiguration(classes = {SpringConfig.class})\r\n@ActiveProfiles(\"dev\")\r\npublic class UsuarioDBRepositoryTest {\r\n\r\n    @Autowired\r\n    private IUsuarioRepository repo;\r\n\r\n    @Test\r\n    void testBeans() {\r\n        assertThat(repo, notNullValue());\r\n    }\r\n\r\n    @Test\r\n    void dadosUsuarios_cuandoExisteUsuarioEnDB_entoncesOK() throws Exception {\r\n        boolean existe = repo.existeUsuario(\"juana@e.com\", \"juanason_1\");\r\n        assertThat(existe, is(true));\r\n    }\r\n\r\n    @Test\r\n    void dadosUsuarios_cuandoExisteUsuarioNoEnDB_entoncesNOK() throws Exception {\r\n        boolean existe = repo.existeUsuario(\"xxxx@e.com\", \"xxxx\");\r\n        assertThat(existe, is(false));\r\n    }\r\n\r\n    @Test\r\n    void dadosUsuarios_cuandogetUsuarioEnDB_entoncesUsuario() throws Exception {\r\n        Usuario usuario = repo.getUsuario(\"juana@e.com\", \"juanason_1\");\r\n\r\n        System.out.println(usuario);\r\n\r\n        assertThat(usuario.getEmail(), is(\"juana@e.com\"));\r\n\r\n    }\r\n\r\n    @Test\r\n    void dadosUsuarios_cuandogetUsuariosEnDB_entoncesUsuarios() throws Exception {\r\n        List<Usuario> usuarios = repo.getUsuarios(\"a\");\r\n\r\n        System.out.println(usuarios);\r\n\r\n        assertThat(usuarios.size(), greaterThan(0));\r\n\r\n    }\r\n\r\n    @Test\r\n    void dadosUsuarios_cuandogetUsuarioNoEnDB_entoncesExcepcion() {\r\n\r\n        assertThrows(UsuarioNotFoundException.class, () -> {\r\n            Usuario usuario = repo.getUsuario(\"xxxx@e.com\", \"xxxx\");\r\n        });\r\n\r\n    }\r\n\r\n    @Test\r\n    void dadosUsuario_cuandoinsertarUsuarioEnDB_entoncesIdValido() throws Exception {\r\n        Usuario user = new Usuario(null, \"nuevo\", \"usuario\", \"n@n.com\", 10, 0, \"xxxx\", LocalDate.of(2005, 02, 01), true);\r\n\r\n        repo.insertUsuario(user);\r\n\r\n        System.out.println(user);\r\n\r\n        assertThat(user.getUid(), greaterThan(0));\r\n    }\r\n\r\n    @Test\r\n    void dadoUsuarioExistente_cuandoActualiza_entonces_Ok() throws Exception {\r\n        Usuario user = repo.getUsuario(\"juana@e.com\", \"juanason_1\");\r\n        user.setApellido(\"Juanez\");\r\n        user.setInteres(2);\r\n\r\n        repo.updateUsuario(user);\r\n\r\n        assertThat(user.getApellido(), is(\"Juanez\"));\r\n    }\r\n\r\n    @Test\r\n    void dadoUsuarioNoExistente_cuandoActualiza_entonces_Excepccion() throws Exception {\r\n        Usuario user = new Usuario(null, \"nuevo\", \"usuario\", \"n@n.com\", 10, 0, \"xxxx\", LocalDate.of(2005, 02, 01), true);\r\n        user.setApellido(\"Apellido nuevo\");\r\n        user.setInteres(2);\r\n\r\n        assertThrows(Exception.class, () -> {\r\n            repo.updateUsuario(user);\r\n        });\r\n\r\n    }\r\n\r\n    @Test\r\n    void dadoUsuario_cuandoDelete_entonces_Ok() throws Exception {\r\n        int id = 11;\r\n        boolean ok = repo.deleteUsuario(id);\r\n\r\n        assertThat(ok, is(true));\r\n    }\r\n\r\n}
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/test/java/com/myshoppingcart/persistence/UsuarioDBRepositoryTest.java b/src/test/java/com/myshoppingcart/persistence/UsuarioDBRepositoryTest.java
+--- a/src/test/java/com/myshoppingcart/persistence/UsuarioDBRepositoryTest.java	(revision e1669f380c0edc44b19bdbbcb5fb9ed7766a6104)
++++ b/src/test/java/com/myshoppingcart/persistence/UsuarioDBRepositoryTest.java	(date 1725456442376)
+@@ -6,6 +6,7 @@
+ import org.junit.jupiter.api.Test;
+ import org.junit.jupiter.api.extension.ExtendWith;
+ import org.springframework.beans.factory.annotation.Autowired;
++import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+ import org.springframework.test.context.ActiveProfiles;
+ import org.springframework.test.context.ContextConfiguration;
+ import org.springframework.test.context.junit.jupiter.SpringExtension;
+@@ -19,7 +20,8 @@
+ 
+ @ExtendWith(SpringExtension.class)
+ @ContextConfiguration(classes = {SpringConfig.class})
+-@ActiveProfiles("dev")
++//@ActiveProfiles("dev")
++@EnableAutoConfiguration
+ public class UsuarioDBRepositoryTest {
+ 
+     @Autowired
+Index: src/main/java/com/myshoppingcart/config/SpringConfig.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.myshoppingcart.config;\r\n\r\nimport org.springframework.context.annotation.ComponentScan;\r\nimport org.springframework.context.annotation.Configuration;\r\nimport org.springframework.context.annotation.Import;\r\nimport org.springframework.context.annotation.PropertySource;\r\n\r\n@Configuration\r\n@Import({ReposConfig.class, ServicesConfig.class})\r\n@ComponentScan(basePackages = {\"com.myshoppingcart.persistence\", \"com.myshoppingcart.service\"})\r\n@PropertySource(\"classpath:config.properties\")\r\npublic class SpringConfig {\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/main/java/com/myshoppingcart/config/SpringConfig.java b/src/main/java/com/myshoppingcart/config/SpringConfig.java
+--- a/src/main/java/com/myshoppingcart/config/SpringConfig.java	(revision e1669f380c0edc44b19bdbbcb5fb9ed7766a6104)
++++ b/src/main/java/com/myshoppingcart/config/SpringConfig.java	(date 1725455896308)
+@@ -7,7 +7,8 @@
+ 
+ @Configuration
+ @Import({ReposConfig.class, ServicesConfig.class})
+-@ComponentScan(basePackages = {"com.myshoppingcart.persistence", "com.myshoppingcart.service"})
+-@PropertySource("classpath:config.properties")
++//@ComponentScan(basePackages = {"com.myshoppingcart.persistence", "com.myshoppingcart.service"})
++@PropertySource("classpath:application.properties")
+ public class SpringConfig {
++
+ }
+Index: src/main/resources/config.properties
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>ISO-8859-1
+===================================================================
+diff --git a/src/main/resources/config.properties b/src/main/resources/application.properties
+rename from src/main/resources/config.properties
+rename to src/main/resources/application.properties
+--- a/src/main/resources/config.properties	(revision e1669f380c0edc44b19bdbbcb5fb9ed7766a6104)
++++ b/src/main/resources/application.properties	(date 1725454411157)
+@@ -1,3 +1,6 @@
+-db_url=jdbc:mysql://localhost/productos_db?user=productos_user&password=prod123
+-db_user=productos_user
+-db_password=prod123
+\ No newline at end of file
++spring.datasource.url=jdbc:mysql://127.0.0.1:3306/productos_db
++spring.datasource.username=root
++spring.datasource.password=root
++spring.datasource.driver.class=com.mysql.cj.jdbc.Driver
++spring.jpa.properties.hibernate.dialect = org.hibernate.dialect.MySQL5Dialect
++spring.jpa.hibernate.ddl-auto=update
+\ No newline at end of file
+Index: src/main/java/com/myshoppingcart/model/Producto.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.myshoppingcart.model;\r\n\r\nimport lombok.AllArgsConstructor;\r\nimport lombok.Getter;\r\nimport lombok.Setter;\r\nimport lombok.ToString;\r\n\r\n@AllArgsConstructor\r\n@Getter\r\n@Setter\r\n@ToString\r\npublic class Producto {\r\n\r\n    private Integer mid;\r\n    private String codigo;\r\n    private String marca;\r\n    private String tipo;\r\n    private double precio;\r\n    private int existencias;\r\n\r\n    public Producto(Integer id, String cod, double prec) {\r\n        this.mid = id;\r\n        this.codigo = cod;\r\n        this.precio = prec;\r\n    }\r\n\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/main/java/com/myshoppingcart/model/Producto.java b/src/main/java/com/myshoppingcart/model/Producto.java
+--- a/src/main/java/com/myshoppingcart/model/Producto.java	(revision e1669f380c0edc44b19bdbbcb5fb9ed7766a6104)
++++ b/src/main/java/com/myshoppingcart/model/Producto.java	(date 1725450930223)
+@@ -1,16 +1,18 @@
+ package com.myshoppingcart.model;
+ 
+-import lombok.AllArgsConstructor;
+-import lombok.Getter;
+-import lombok.Setter;
+-import lombok.ToString;
++import lombok.*;
+ 
++import javax.persistence.*;
++
++@Data
++@Entity
++@NoArgsConstructor
+ @AllArgsConstructor
+-@Getter
+-@Setter
+-@ToString
++@Table(name = "Producto")
+ public class Producto {
+ 
++    @Id
++    @GeneratedValue(strategy = GenerationType.IDENTITY)
+     private Integer mid;
+     private String codigo;
+     private String marca;
+Index: src/main/java/com/myshoppingcart/persistence/CompraDBRepository.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.myshoppingcart.persistence;\r\n\r\nimport com.myshoppingcart.exception.ProductNotFoundException;\r\nimport com.myshoppingcart.model.Compra;\r\nimport lombok.Setter;\r\nimport org.springframework.beans.factory.annotation.Value;\r\nimport org.springframework.stereotype.Repository;\r\n\r\nimport java.sql.*;\r\n\r\n@Setter\r\n//@Component\r\n@Repository\r\npublic class CompraDBRepository implements ICompraRepository {\r\n    @Value(\"${db_url}\")\r\n    private String connUrl;\r\n\r\n    @Override\r\n    public Compra insertCompra(Compra nuevaCompra) throws Exception {\r\n        Connection conn = null;\r\n        try {\r\n            conn = DriverManager.getConnection(connUrl);\r\n            conn.setAutoCommit(false);\r\n\r\n            // OBTENEMOS EL PRODUCTO\r\n            String sql = \"SELECT * FROM producto WHERE pid = ?\";\r\n            PreparedStatement pstm = conn.prepareStatement(sql);\r\n            pstm.setInt(1, nuevaCompra.getProducto());\r\n\r\n            ResultSet rs = pstm.executeQuery();\r\n            double precio = 0;\r\n            int existencias = 0;\r\n            if (rs.next()) {\r\n                precio = rs.getDouble(\"precio\");\r\n                existencias = rs.getInt(\"existencias\");\r\n            } else {\r\n                throw new ProductNotFoundException();\r\n            }\r\n            pstm.close();\r\n\r\n            // INSERTAR EN COMPRA\r\n            sql = \"INSERT INTO compra VALUES(NULL,?,?,?,?)\";\r\n            pstm = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);\r\n            pstm.setInt(1, nuevaCompra.getUsuario());\r\n            pstm.setInt(2, nuevaCompra.getProducto());\r\n            pstm.setInt(3, nuevaCompra.getCantidad());\r\n            pstm.setString(4, nuevaCompra.getFecha().toString());\r\n\r\n            int rows = pstm.executeUpdate();\r\n\r\n            ResultSet generatedKeys = pstm.getGeneratedKeys();\r\n            if (generatedKeys.next()) {\r\n                nuevaCompra.setCid(generatedKeys.getInt(1));\r\n            } else {\r\n                throw new SQLException(\"Creating compra failed, no ID obtained.\");\r\n            }\r\n            pstm.close();\r\n\r\n            System.out.println(\"Nueva compra:\" + nuevaCompra);\r\n\r\n            // ACTUALIZAR SALDO DE USUARIO\r\n            sql = \"UPDATE usuario u SET u.saldo = u.saldo - ? WHERE u.uid=?\";\r\n            pstm = conn.prepareStatement(sql);\r\n            pstm.setDouble(1, nuevaCompra.getCantidad() * precio);\r\n            pstm.setInt(2, nuevaCompra.getUsuario());\r\n\r\n            rows = pstm.executeUpdate();\r\n            pstm.close();\r\n\r\n            // ACTUALIZAR EXISTENCIAS DE PRODUCTO\r\n            if (existencias < nuevaCompra.getCantidad()) {\r\n                throw new Exception(\"Existencias insuficientes\");\r\n            }\r\n            sql = \"UPDATE producto p SET p.existencias=p.existencias - ? WHERE p.pid=?\";\r\n            pstm = conn.prepareStatement(sql);\r\n            pstm.setInt(1, nuevaCompra.getCantidad());\r\n            pstm.setInt(2, nuevaCompra.getProducto());\r\n\r\n            rows = pstm.executeUpdate();\r\n            pstm.close();\r\n\r\n            System.out.println(\"Transaccion exitosa!!\");\r\n            conn.commit();\r\n\r\n        } catch (Exception e) {\r\n            System.out.println(\"Transaccion rollback!!\");\r\n            conn.rollback();\r\n            e.printStackTrace();\r\n            throw e;\r\n        } finally {\r\n            if (conn != null) conn.close();\r\n        }\r\n\r\n        return nuevaCompra;\r\n    }\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/main/java/com/myshoppingcart/persistence/CompraDBRepository.java b/src/main/java/com/myshoppingcart/persistence/CompraDBRepository.java
+--- a/src/main/java/com/myshoppingcart/persistence/CompraDBRepository.java	(revision e1669f380c0edc44b19bdbbcb5fb9ed7766a6104)
++++ b/src/main/java/com/myshoppingcart/persistence/CompraDBRepository.java	(date 1725452404106)
+@@ -9,10 +9,11 @@
+ import java.sql.*;
+ 
+ @Setter
+-//@Component
+ @Repository
+ public class CompraDBRepository implements ICompraRepository {
+-    @Value("${db_url}")
++
++
++//    @Value("${db_url}")
+     private String connUrl;
+ 
+     @Override
+Index: src/main/java/com/myshoppingcart/model/Compra.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.myshoppingcart.model;\r\n\r\nimport lombok.AllArgsConstructor;\r\nimport lombok.Getter;\r\nimport lombok.Setter;\r\nimport lombok.ToString;\r\n\r\nimport java.time.LocalDate;\r\n\r\n@AllArgsConstructor\r\n@Getter\r\n@Setter\r\n@ToString\r\npublic class Compra {\r\n    private Integer cid;\r\n    private int usuario;\r\n    private int producto;\r\n    private int cantidad;\r\n    private LocalDate fecha;\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/main/java/com/myshoppingcart/model/Compra.java b/src/main/java/com/myshoppingcart/model/Compra.java
+--- a/src/main/java/com/myshoppingcart/model/Compra.java	(revision e1669f380c0edc44b19bdbbcb5fb9ed7766a6104)
++++ b/src/main/java/com/myshoppingcart/model/Compra.java	(date 1725450930371)
+@@ -1,17 +1,19 @@
+ package com.myshoppingcart.model;
+ 
+-import lombok.AllArgsConstructor;
+-import lombok.Getter;
+-import lombok.Setter;
+-import lombok.ToString;
++import lombok.*;
+ 
++import javax.persistence.*;
+ import java.time.LocalDate;
+ 
++@Data
++@Entity
++@NoArgsConstructor
+ @AllArgsConstructor
+-@Getter
+-@Setter
+-@ToString
++@Table(name = "Compra")
+ public class Compra {
++
++    @Id
++    @GeneratedValue(strategy = GenerationType.IDENTITY)
+     private Integer cid;
+     private int usuario;
+     private int producto;
+Index: src/main/java/com/myshoppingcart/App.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.myshoppingcart;\r\n\r\npublic class App\r\n{\r\n    public static void main( String[] args )\r\n    {\r\n        System.out.println( \"My shopping cart\" );\r\n    }\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/main/java/com/myshoppingcart/App.java b/src/main/java/com/myshoppingcart/App.java
+--- a/src/main/java/com/myshoppingcart/App.java	(revision e1669f380c0edc44b19bdbbcb5fb9ed7766a6104)
++++ b/src/main/java/com/myshoppingcart/App.java	(date 1725452191209)
+@@ -1,5 +1,7 @@
+ package com.myshoppingcart;
+ 
++import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
++
+ public class App
+ {
+     public static void main( String[] args )
